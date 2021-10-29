@@ -17,9 +17,11 @@ import io.flutter.plugin.common.MethodChannel.Result;
 
 /** FlutterPipPlugin */
 public class FlutterPipPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware {
-  /// The MethodChannel that will the communication between Flutter and native Android
+  /// The MethodChannel that will the communication between Flutter and native
+  /// Android
   ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
+  /// This local reference serves to register the plugin with the Flutter Engine
+  /// and unregister it
   /// when the Flutter Engine is detached from the Activity
   private MethodChannel channel;
   private Activity activity;
@@ -38,10 +40,8 @@ public class FlutterPipPlugin implements FlutterPlugin, MethodCallHandler, Activ
       Rational aspectRatio = new Rational(width, height);
 
       if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
-        
-        PictureInPictureParams params = new PictureInPictureParams.Builder()
-                .setAspectRatio(aspectRatio)
-                .build();
+
+        PictureInPictureParams params = new PictureInPictureParams.Builder().setAspectRatio(aspectRatio).build();
         activity.enterPictureInPictureMode(params);
         result.success(0);
       } else {
@@ -52,6 +52,16 @@ public class FlutterPipPlugin implements FlutterPlugin, MethodCallHandler, Activ
       boolean isInPictureInPictureMode = false;
       if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
         isInPictureInPictureMode = activity.isInPictureInPictureMode();
+      }
+      result.success(isInPictureInPictureMode);
+    }
+    if (call.method.equals("isFinish")) {
+      boolean isInPictureInPictureMode = false;
+      if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+        isInPictureInPictureMode = activity.isInPictureInPictureMode();
+      }
+      if (isInPictureInPictureMode) {
+        activity.moveTaskToBack(false);
       }
       result.success(isInPictureInPictureMode);
     }
@@ -68,7 +78,8 @@ public class FlutterPipPlugin implements FlutterPlugin, MethodCallHandler, Activ
   }
 
   @Override
-  public void onDetachedFromActivityForConfigChanges() {}
+  public void onDetachedFromActivityForConfigChanges() {
+  }
 
   @Override
   public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
@@ -76,5 +87,6 @@ public class FlutterPipPlugin implements FlutterPlugin, MethodCallHandler, Activ
   }
 
   @Override
-  public void onDetachedFromActivity() {}
+  public void onDetachedFromActivity() {
+  }
 }
