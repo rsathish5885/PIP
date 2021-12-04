@@ -1,8 +1,9 @@
-import 'package:flutter/services.dart';
+/*import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_pip/flutter_pip.dart';
 
 void main() {
-  const channel = MethodChannel('flutter_pip');
+  const MethodChannel channel = MethodChannel('flutter_pip');
 
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -17,6 +18,7 @@ void main() {
   });
 
   test('getPlatformVersion', () async {
-    expect('42', '42');
+    expect(await FlutterPip.platformVersion, '42');
   });
 }
+*/
