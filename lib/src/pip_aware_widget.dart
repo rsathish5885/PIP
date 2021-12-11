@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'flutter_pip.dart';
 import 'package:flutter/foundation.dart';
 
-
 // class PipAwareWidget extends StatelessWidget {
 //   PipAwareWidget({
 //     Key key,
@@ -28,51 +27,49 @@ import 'package:flutter/foundation.dart';
 //   }
 // }
 
-
-
 class PipWidget extends StatefulWidget {
-  final Widget child;
-  final Function(bool) onResume;
-  final Function onSuspending;
-  PipWidget({ this.child, this.onResume, this.onSuspending});
+  final Widget? child;
+  final Function(bool)? onResume;
+  final Function? onSuspending;
+  PipWidget({this.child, this.onResume, this.onSuspending});
   @override
   _PipWidgetState createState() => _PipWidgetState();
 }
 
 class _PipWidgetState extends State<PipWidget> with WidgetsBindingObserver {
-   WidgetsBindingObserver observer;
+  WidgetsBindingObserver? observer;
   @override
   void initState() {
     observer = LifecycleEventHandler(
         resumeCallBack: () async {
           var isInPipMode = await FlutterPip.getchannelavailable();
-          widget.onResume(isInPipMode);
+          widget.onResume!(isInPipMode);
           return;
         },
         // ignore: unnecessary_cast
         suspendingCallBack: () {
-          widget.onSuspending();
+          widget.onSuspending!();
           return;
         } as Future<void> Function());
     super.initState();
-    WidgetsBinding.instance.addObserver(observer);
+    WidgetsBinding.instance!.addObserver(observer!);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(observer);
+    WidgetsBinding.instance!.removeObserver(observer!);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return widget.child!;
   }
 }
 
 class LifecycleEventHandler extends WidgetsBindingObserver {
-  final AsyncCallback resumeCallBack;
-  final AsyncCallback suspendingCallBack;
+  final AsyncCallback? resumeCallBack;
+  final AsyncCallback? suspendingCallBack;
 
   LifecycleEventHandler({this.resumeCallBack, this.suspendingCallBack});
 
@@ -81,14 +78,14 @@ class LifecycleEventHandler extends WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.resumed:
         if (resumeCallBack != null) {
-          await resumeCallBack();
+          await resumeCallBack!();
         }
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
         if (suspendingCallBack != null) {
-          await suspendingCallBack();
+          await suspendingCallBack!();
         }
         break;
     }
