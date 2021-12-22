@@ -30,7 +30,7 @@ import 'package:flutter/foundation.dart';
 class PipWidget extends StatefulWidget {
   final Widget? child;
   final Function(bool)? onResume;
-  final  void Function()? onSuspending;
+  final void Function()? onSuspending;
   PipWidget({this.child, this.onResume, this.onSuspending});
   @override
   _PipWidgetState createState() => _PipWidgetState();
@@ -40,18 +40,13 @@ class _PipWidgetState extends State<PipWidget> with WidgetsBindingObserver {
   WidgetsBindingObserver? observer;
   @override
   void initState() {
-    observer = LifecycleEventHandler(
-        resumeCallBack: () async {
-          var isInPipMode = await FlutterPip.getchannelavailable();
-          widget.onResume!(isInPipMode);
-          return;
-        },
-        // ignore: unnecessary_cast
-        suspendingCallBack: () {
-          widget.onSuspending!();
-           throw("suspending");
-        
-        } );
+    observer = LifecycleEventHandler(resumeCallBack: () async {
+      var isInPipMode = await FlutterPip.getchannelavailable();
+      widget.onResume!(isInPipMode);
+      return;
+    }, suspendingCallBack: () {
+      widget.onSuspending!();
+    });
     super.initState();
     WidgetsBinding.instance!.addObserver(observer!);
   }
@@ -70,7 +65,7 @@ class _PipWidgetState extends State<PipWidget> with WidgetsBindingObserver {
 
 class LifecycleEventHandler extends WidgetsBindingObserver {
   final AsyncCallback? resumeCallBack;
-  final AsyncCallback? suspendingCallBack;
+  final VoidCallback? suspendingCallBack;
 
   LifecycleEventHandler({this.resumeCallBack, this.suspendingCallBack});
 
@@ -86,7 +81,7 @@ class LifecycleEventHandler extends WidgetsBindingObserver {
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
         if (suspendingCallBack != null) {
-          await suspendingCallBack!();
+          suspendingCallBack!();
         }
         break;
     }
